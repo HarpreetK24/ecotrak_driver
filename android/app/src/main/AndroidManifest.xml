@@ -3,6 +3,10 @@
         android:label="ecotrak_driver"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAjTrI4rg2Oj7CS29jU3fWjZXqeddIsyTM"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
