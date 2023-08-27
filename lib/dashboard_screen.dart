@@ -1,15 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'track_truck_screen.dart';
 import 'profile_screen.dart';
 import 'manage_booking_screen.dart';
-import 'manage_booking_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
-
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
@@ -24,7 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       });
     }
   }
-  List<Widget> _widgetOptions = [
+  final List<Widget> _widgetOptions = [
     TrackTruckScreen(),
     ProfileScreen(),
     ManageBookingScreen(),
@@ -34,7 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ecotrak'),
+        title: const Text('Ecotrak'),
       ),
       drawer: buildSidebar(context),
       body: _widgetOptions[_selectedIndex],
@@ -48,7 +45,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.green,
             ),
             child: Row(
@@ -59,8 +56,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ? FileImage(_profileImage!)
                       :Image.asset("assets/images/donate-blood-collage-coronavirus-icons-vector-30596014.png").image,
                 ),
-                SizedBox(width: 16),
-                Column(
+                const SizedBox(width: 16),
+                const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -85,16 +82,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.star),
-            title: Text('Rewards'),
+            leading: const Icon(Icons.star),
+            title: const Text('Rewards'),
             onTap: () {
               // Navigate to rewards screen
               Navigator.pushNamed(context, '/rewards');
             },
           ),
           ListTile(
-            leading: Icon(Icons.image),
-            title: Text('Change Profile Picture'),
+            leading: const Icon(Icons.image),
+            title: const Text('Change Profile Picture'),
             onTap: () async {
               await _pickImage(ImageSource.gallery);
               Navigator.pop(context); // Close the drawer after selecting image

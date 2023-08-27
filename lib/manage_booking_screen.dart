@@ -5,9 +5,9 @@ class ManageBookingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Existing Booking'),
+        title: const Text('Manage Existing Booking'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Manage Booking Screen Content'),
       ),
     );
