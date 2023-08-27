@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "678715415011",
+    "project_id": "ecotrak-65cb0",
+    "storage_bucket": "ecotrak-65cb0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678715415011:android:1ca451d82ea3405050e8d6",
+        "android_client_info": {
+          "package_name": "com.example.ecotrak_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "678715415011-4p78s2ruirrkmstapab6tpc403ea87uk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArvhdF8AaO9zExqm2dxYeQKT5KEeHVEJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "678715415011-4p78s2ruirrkmstapab6tpc403ea87uk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
