@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'package:ecotrak_driver/screens/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'track_truck_screen.dart';
 import 'profile_screen.dart';
 import 'manage_booking_screen.dart';
@@ -13,14 +13,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
   File? _profileImage;
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedImage = await ImagePicker().pickImage(source: source);
-    if (pickedImage != null) {
-      setState(() {
-        _profileImage = File(pickedImage.path);
-      });
-    }
-  }
+
   final List<Widget> _widgetOptions = [
     TrackTruckScreen(),
     ProfileScreen(),
@@ -32,6 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ecotrak'),
+          backgroundColor: Colors.green
       ),
       drawer: buildSidebar(context),
       body: _widgetOptions[_selectedIndex],
@@ -90,12 +84,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.image),
-            title: const Text('Change Profile Picture'),
-            onTap: () async {
-              await _pickImage(ImageSource.gallery);
-              Navigator.pop(context); // Close the drawer after selecting image
-            },
+              leading: Icon(Icons.exit_to_app), // Logout icon
+              title: Text('Logout'), // Logout text
+              onTap: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                      (Route<dynamic> route) => false, // Remove all previous routes
+                );
+              }
           ),
         ],
       ),
@@ -110,10 +106,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           icon: Icon(Icons.location_on),
           label: 'Track Truck',
         ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.event_note),
-        //   label: 'Special Booking',
-        // ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profile',
