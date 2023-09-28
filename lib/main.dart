@@ -4,10 +4,12 @@
 import 'package:ecotrak_driver/convert_latlng_to_address.dart';
 import 'package:ecotrak_driver/screens/Welcome/welcome_screen.dart';
 import 'package:ecotrak_driver/user_current_location.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:ecotrak_driver/track_truck_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'constants.dart';
+import 'dashboard_screen.dart';
 import 'firebase_options.dart';
 // import 'constants.dart';
 // import 'package:geocoding/geocoding.dart';
@@ -27,23 +29,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     title: 'EcoTrak',
-  //     debugShowCheckedModeBanner: false,
-  //     theme: ThemeData(
-  //       primarySwatch: Colors.lightGreen,
-  //       visualDensity: VisualDensity.adaptivePlatformDensity,
-  //     ),
-  //     home: DashboardScreen(),
-  //     routes: {
-  //       '/trackTruck': (context) => TrackTruckScreen(),
-  //       '/profile': (context) => ProfileScreen(),
-  //       '/manageBooking': (context) => ManageBookingScreen(),
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +40,8 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              elevation: 0, backgroundColor: kPrimaryColor,
+              elevation: 0,
+              backgroundColor: kPrimaryColor,
               shape: const StadiumBorder(),
               maximumSize: const Size(double.infinity, 56),
               minimumSize: const Size(double.infinity, 56),
@@ -73,14 +59,57 @@ class MyApp extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
           )),
-      home: const WelcomeScreen(),
+      home: AuthChecker(),
 
-      // home: const ConvertLatLangToAddress(),
-
-      //To Call Direction API and Page.
-      // home: const GetUserCurrentLocationScreen(),
     );
   }
+}
+
+class AuthChecker extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance;
+    return StreamBuilder<User?>(
+      stream: auth.authStateChanges(), // Listen to authentication state changes
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Loading state
+          return CircularProgressIndicator(); // You can replace this with a loading widget
+        } else if (snapshot.hasData && snapshot.data != null) {
+          // User is logged in, navigate to the dashboard
+          return DashboardScreen(); // Replace with your actual dashboard screen
+        } else {
+          // User is not logged in, show the welcome screen
+          return WelcomeScreen(); // Replace with your actual welcome screen
+        }
+      },
+    );
+  }
+}
+
+// @override
+// Widget build(BuildContext context) {
+//   return MaterialApp(
+//     title: 'EcoTrak',
+//     debugShowCheckedModeBanner: false,
+//     theme: ThemeData(
+//       primarySwatch: Colors.lightGreen,
+//       visualDensity: VisualDensity.adaptivePlatformDensity,
+//     ),
+//     home: DashboardScreen(),
+//     routes: {
+//       '/trackTruck': (context) => TrackTruckScreen(),
+//       '/profile': (context) => ProfileScreen(),
+//       '/manageBooking': (context) => ManageBookingScreen(),
+//     },
+//   );
+// }
+
+// home: const ConvertLatLangToAddress(),
+
+//To Call Direction API and Page.
+// home: const GetUserCurrentLocationScreen(),
+
   //
   // @override
   // Widget build(BuildContext context) {
@@ -88,7 +117,6 @@ class MyApp extends StatelessWidget {
   //     home: GeolocationApp(),
   //   );
   // }
-}
 
 
 

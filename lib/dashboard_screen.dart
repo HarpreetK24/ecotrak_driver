@@ -5,6 +5,8 @@ import 'track_truck_screen.dart';
 import 'profile_screen.dart';
 import 'manage_booking_screen.dart';
 // import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -14,6 +16,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
   File? _profileImage;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
 
   final List<Widget> _widgetOptions = [
     // TrackTruckScreen(),
@@ -35,71 +39,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       bottomNavigationBar: buildBottomNavigationBar(),
     );
   }
-
-  // Widget buildSidebar(BuildContext context) {
-  //   return Drawer(
-  //     child: ListView(
-  //       padding: EdgeInsets.zero,
-  //       children: <Widget>[
-  //         DrawerHeader(
-  //           decoration: const BoxDecoration(
-  //             color: Colors.green,
-  //           ),
-  //           child: Row(
-  //             children: [
-  //               CircleAvatar(
-  //                 radius: 40,
-  //                 backgroundImage: _profileImage != null
-  //                     ? FileImage(_profileImage!)
-  //                     :Image.asset("assets/images/donate-blood-collage-coronavirus-icons-vector-30596014.png").image,
-  //               ),
-  //               const SizedBox(width: 16),
-  //               const Column(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Text(
-  //                     'Nitish', // Replace with user's name
-  //                     style: TextStyle(
-  //                       color: Colors.white,
-  //                       fontSize: 18,
-  //                     ),
-  //                   ),
-  //                   SizedBox(height: 4),
-  //                   Text(
-  //                     'Employee', // Replace with user's membership status
-  //                     style: TextStyle(
-  //                       color: Colors.white,
-  //                       fontSize: 14,
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         ListTile(
-  //           leading: const Icon(Icons.star),
-  //           title: const Text('Rewards'),
-  //           onTap: () {
-  //             // Navigate to rewards screen
-  //             Navigator.pushNamed(context, '/rewards');
-  //           },
-  //         ),
-  //         ListTile(
-  //             leading: Icon(Icons.exit_to_app), // Logout icon
-  //             title: Text('Logout'), // Logout text
-  //             onTap: () {
-  //               Navigator.of(context).pushAndRemoveUntil(
-  //                 MaterialPageRoute(builder: (context) => WelcomeScreen()),
-  //                     (Route<dynamic> route) => false, // Remove all previous routes
-  //               );
-  //             }
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget buildSidebar(BuildContext context) {
     return Drawer(
@@ -163,7 +102,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ListTile(
               leading: Icon(Icons.exit_to_app), // Logout icon
               title: Text('Logout'), // Logout text
-              onTap: () {
+              onTap: () async {
+                // Sign out from Firebase
+                await _auth.signOut();
+
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => WelcomeScreen()),
                       (Route<dynamic> route) => false, // Remove all previous routes

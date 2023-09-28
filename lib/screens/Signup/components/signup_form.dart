@@ -151,7 +151,7 @@ class _SignUpFormState extends State<SignUpForm> {
         );
 
         // Store user data in Firestore
-        await FirebaseFirestore.instance.collection('users').doc(authResult.user?.uid).set({
+        await FirebaseFirestore.instance.collection('driver').doc(authResult.user?.uid).set({
           'name': _nameController.text,
           'phone': _phoneController.text,
           'email': _emailController.text,
