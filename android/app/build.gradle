@@ -49,6 +49,15 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        multiDexEnabled true
+
+    }
+
+    lintOptions {
+        // Add the following line to enable lint checks with unchecked warnings
+        warning 'unchecked'
+        // Other lint options...
     }
 
     buildTypes {

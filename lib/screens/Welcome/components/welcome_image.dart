@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 import '../../../constants.dart';
 
@@ -11,9 +12,17 @@ class WelcomeImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          "WELCOME TO EcoTrak",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        AnimatedTextKit(
+          animatedTexts: [
+            TypewriterAnimatedText(
+              "WELCOME TO EcoTrak",
+              textStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 30.0,
+              ),
+              speed: const Duration(milliseconds: 100), // Adjust animation speed
+            ),
+          ],
         ),
         SizedBox(height: defaultPadding * 2),
         Row(

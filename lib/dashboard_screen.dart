@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'track_truck_screen.dart';
 import 'profile_screen.dart';
 import 'manage_booking_screen.dart';
+// import 'package:image_picker/image_picker.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -15,6 +16,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   File? _profileImage;
 
   final List<Widget> _widgetOptions = [
+    // TrackTruckScreen(),
+    //MapSample(),
     TrackTruckScreen(),
     ProfileScreen(),
     ManageBookingScreen(),
@@ -33,13 +36,78 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // Widget buildSidebar(BuildContext context) {
+  //   return Drawer(
+  //     child: ListView(
+  //       padding: EdgeInsets.zero,
+  //       children: <Widget>[
+  //         DrawerHeader(
+  //           decoration: const BoxDecoration(
+  //             color: Colors.green,
+  //           ),
+  //           child: Row(
+  //             children: [
+  //               CircleAvatar(
+  //                 radius: 40,
+  //                 backgroundImage: _profileImage != null
+  //                     ? FileImage(_profileImage!)
+  //                     :Image.asset("assets/images/donate-blood-collage-coronavirus-icons-vector-30596014.png").image,
+  //               ),
+  //               const SizedBox(width: 16),
+  //               const Column(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     'Nitish', // Replace with user's name
+  //                     style: TextStyle(
+  //                       color: Colors.white,
+  //                       fontSize: 18,
+  //                     ),
+  //                   ),
+  //                   SizedBox(height: 4),
+  //                   Text(
+  //                     'Employee', // Replace with user's membership status
+  //                     style: TextStyle(
+  //                       color: Colors.white,
+  //                       fontSize: 14,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         ListTile(
+  //           leading: const Icon(Icons.star),
+  //           title: const Text('Rewards'),
+  //           onTap: () {
+  //             // Navigate to rewards screen
+  //             Navigator.pushNamed(context, '/rewards');
+  //           },
+  //         ),
+  //         ListTile(
+  //             leading: Icon(Icons.exit_to_app), // Logout icon
+  //             title: Text('Logout'), // Logout text
+  //             onTap: () {
+  //               Navigator.of(context).pushAndRemoveUntil(
+  //                 MaterialPageRoute(builder: (context) => WelcomeScreen()),
+  //                     (Route<dynamic> route) => false, // Remove all previous routes
+  //               );
+  //             }
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   Widget buildSidebar(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.green,
             ),
             child: Row(
@@ -50,13 +118,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ? FileImage(_profileImage!)
                       :Image.asset("assets/images/donate-blood-collage-coronavirus-icons-vector-30596014.png").image,
                 ),
-                const SizedBox(width: 16),
-                const Column(
+                SizedBox(width: 16),
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Harpreet', // Replace with user's name
+                      'John Doe', // Replace with user's name
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -64,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Driver', // Replace with user's membership status
+                      'Premium Member', // Replace with user's membership status
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -76,12 +144,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.star),
-            title: const Text('Rewards'),
+            leading: Icon(Icons.star),
+            title: Text('Rewards'),
             onTap: () {
               // Navigate to rewards screen
               Navigator.pushNamed(context, '/rewards');
             },
+          ),
+          ListTile(
+            leading: Icon(Icons.image),
+            title: Text('Change Profile Picture'),
+            // onTap: () async {
+            //   await _pickImage(ImageSource.gallery);
+            //   Navigator.pop(context); // Close the drawer after selecting image
+            // },
+
           ),
           ListTile(
               leading: Icon(Icons.exit_to_app), // Logout icon

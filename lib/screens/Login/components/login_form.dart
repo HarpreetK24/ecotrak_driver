@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
+import 'package:ecotrak_driver/dashboard_screen.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
-import 'package:ecotrak_driver/dashboard_screen.dart';
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({
-    Key? key,
-  }) : super(key: key);
+class LoginForm extends StatefulWidget {
+  const LoginForm({Key? key}) : super(key: key);
+
+  @override
+  _LoginFormState createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         children: [
           TextFormField(
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
-            onSaved: (email) {},
+            controller: _emailController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your email';
+              }
+              return null;
+            },
             decoration: InputDecoration(
               hintText: "Your email",
               prefixIcon: Padding(
@@ -34,6 +48,13 @@ class LoginForm extends StatelessWidget {
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
+              controller: _passwordController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
               decoration: InputDecoration(
                 hintText: "Your password",
                 prefixIcon: Padding(
@@ -44,17 +65,14 @@ class LoginForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: defaultPadding),
-          Hero(
-            tag: "login_btn",
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context)=>DashboardScreen()),
-                );
-              },
-              child: Text(
-                "Login".toUpperCase(),
-              ),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                _signInWithEmailAndPassword();
+              }
+            },
+            child: Text(
+              "Login".toUpperCase(),
             ),
           ),
           const SizedBox(height: defaultPadding),
@@ -74,4 +92,36 @@ class LoginForm extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _signInWithEmailAndPassword() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      // If sign-in is successful, show a success notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login successful'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      // Navigate to the dashboard
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => DashboardScreen()),
+      );
+    } catch (e) {
+      // Handle sign-in errors here
+      print('Error signing in: $e');
+      // Show an error notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Incorrect email or password'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 }
+
