@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-
 class GetUserCurrentLocationScreen extends StatefulWidget {
   const GetUserCurrentLocationScreen({super.key});
 

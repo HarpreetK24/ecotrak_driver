@@ -2,7 +2,9 @@
 
 // import 'package:ecotrak_driver/profile_screen.dart';
 import 'package:ecotrak_driver/convert_latlng_to_address.dart';
+import 'package:ecotrak_driver/profile_screen.dart';
 import 'package:ecotrak_driver/screens/Welcome/welcome_screen.dart';
+import 'package:ecotrak_driver/track_truck_screen.dart';
 import 'package:ecotrak_driver/user_current_location.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:ecotrak_driver/track_truck_screen.dart';
@@ -11,11 +13,86 @@ import 'package:firebase_core/firebase_core.dart';
 import 'constants.dart';
 import 'dashboard_screen.dart';
 import 'firebase_options.dart';
-// import 'constants.dart';
-// import 'package:geocoding/geocoding.dart';
-// import 'package:geolocator/geolocator.dart';
-// import 'dashboard_screen.dart';
-// import 'manage_booking_screen.dart';
+import 'constants.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'dashboard_screen.dart';
+import 'manage_booking_screen.dart';
+
+// import 'dart:math';
+//
+// class Coordinate {
+//   final double latitude;
+//   final double longitude;
+//
+//   Coordinate(this.latitude, this.longitude);
+// }
+//
+// double radians(double degrees) {
+//   return degrees * (pi / 180);
+// }
+//
+// double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+//   // Convert latitude and longitude from degrees to radians
+//   lat1 = radians(lat1);
+//   lon1 = radians(lon1);
+//   lat2 = radians(lat2);
+//   lon2 = radians(lon2);
+//
+//   // Radius of the Earth in kilometers
+//   const double R = 6371;
+//
+//   // Haversine formula
+//   final double dlon = lon2 - lon1;
+//   final double dlat = lat2 - lat1;
+//   final double a = pow(sin(dlat / 2), 2) +
+//       cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
+//   final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+//   final double distance = R * c;
+//
+//   return distance;
+// }
+//
+// Coordinate findClosestCoordinate(
+//     List<Coordinate> coordinates, double userLat, double userLon) {
+//   double minDistance = double.infinity;
+//   Coordinate? closestCoordinate;
+//
+//   for (final coordinate in coordinates) {
+//     final distance = calculateDistance(
+//         userLat, userLon, coordinate.latitude, coordinate.longitude);
+//     if (distance < minDistance) {
+//       minDistance = distance;
+//       closestCoordinate = coordinate;
+//     }
+//   }
+//
+//   return closestCoordinate!;
+// }
+//
+// void main() {
+//   // Example user coordinates
+//   final userLat = 12.93631867349087;
+//   final userLon = 77.6061949537479;
+//
+//   // Example set of coordinates
+//   final coordinates = [
+//     Coordinate(12.936736076932927, 77.60630533488306),
+//     Coordinate(12.935754659222674, 77.60367602537771),
+//     Coordinate(12.934430347146176, 77.60804190265323),
+//     Coordinate(12.93646107647517, 77.60590585426021),
+//     // Add more coordinates as needed
+//   ];
+//
+//   // Find the closest coordinate
+//   final closest = findClosestCoordinate(coordinates, userLat, userLon);
+//
+//   print("Closest Coordinate: Lat ${closest.latitude}, Lon ${closest.longitude}");
+// }
+
+
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,6 +154,8 @@ class AuthChecker extends StatelessWidget {
           return CircularProgressIndicator(); // You can replace this with a loading widget
         } else if (snapshot.hasData && snapshot.data != null) {
           // User is logged in, navigate to the dashboard
+
+          // return ConvertLatLangToAddress();
           return DashboardScreen(); // Replace with your actual dashboard screen
         } else {
           // User is not logged in, show the welcome screen
@@ -86,7 +165,7 @@ class AuthChecker extends StatelessWidget {
     );
   }
 }
-
+//
 // @override
 // Widget build(BuildContext context) {
 //   return MaterialApp(
@@ -104,10 +183,10 @@ class AuthChecker extends StatelessWidget {
 //     },
 //   );
 // }
-
+//
 // home: const ConvertLatLangToAddress(),
-
-//To Call Direction API and Page.
+//
+// To Call Direction API and Page.
 // home: const GetUserCurrentLocationScreen(),
 
   //

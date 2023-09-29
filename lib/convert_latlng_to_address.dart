@@ -35,11 +35,18 @@ class _ConvertLatLandToAddressState extends State<ConvertLatLangToAddress> {
                 List<Location> locations = await locationFromAddress("48-49, Kalpavriksha Student Housing, Bhuvanappa Layout, Tavarekere Main Rd, opp. Nexus Mall Parking, Tavarekere, Kaveri Layout, Adugodi, Bengaluru, Karnataka 560029");
 
                 // final coordinates = Coordinates(12.93626232871436, 77.60621561694676);
-                List<Placemark> placemarks = await placemarkFromCoordinates(12.93626232871436, 77.60621561694676);
+                List<Placemark> placemarks = await placemarkFromCoordinates(12.936212774571386, 77.605970323668);
 
                 setState(() {
                   lat = locations.last.longitude.toString() + " " + locations.last.latitude.toString();
-                  stAdd = placemarks.reversed.last.locality.toString();
+                  // stAdd = placemarks.reversed.last.street.toString();
+
+                  stAdd = placemarks
+
+                      .map((placemark) =>
+                  " ${placemark.street}, ${placemark.locality}, ${placemark.country}")
+                      .join(", ");
+
                 });
               } catch (e) {
                 // Handle any exceptions that may occur during geocoding
