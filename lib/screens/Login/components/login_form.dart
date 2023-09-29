@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import 'package:ecotrak_driver/dashboard_screen.dart';
@@ -95,22 +96,39 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _signInWithEmailAndPassword() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      // If sign-in is successful, show a success notification
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Login successful'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-      // Navigate to the dashboard
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => DashboardScreen()),
-      );
+
+      final CollectionReference driversCollection = FirebaseFirestore.instance.collection('driver');
+      final QuerySnapshot driverQuery = await driversCollection.where('email', isEqualTo: _emailController.text).get();
+
+      if(driverQuery.docs.isNotEmpty) {
+        //USer is driver
+        // If sign-in is successful, show a success
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Login successful'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        // Navigate to the dashboard
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('User not found or is not a driver'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+
+
     } catch (e) {
       // Handle sign-in errors here
       print('Error signing in: $e');
