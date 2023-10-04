@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecotrak_driver/CompleteAddress.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ecotrak_driver/dashboard_screen.dart';
@@ -144,43 +145,45 @@ class _SignUpFormState extends State<SignUpForm> {
 
 
   Future<void> _signUpWithEmailAndPassword() async {
-      try {
-        final authResult = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
+    try {
+      final authResult = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
 
-        // Store user data in Firestore
-        await FirebaseFirestore.instance.collection('driver').doc(authResult.user?.uid).set({
-          'name': _nameController.text,
-          'phone': _phoneController.text,
-          'email': _emailController.text,
-        });
+      // Store user data in Firestore
+      await FirebaseFirestore.instance.collection('driver').doc(authResult.user?.uid).set({
+        'name': _nameController.text,
+        'phone': _phoneController.text,
+        'email': _emailController.text,
+      });
 
-        // If sign-up is successful, show a success notification
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Sign up successful. You can now log in.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
-        // Navigate to the dashboard after successful sign-up
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
-        );
-      } catch (e) {
-        // Handle sign-up errors here
-        print('Error signing up: $e');
-        // Show an error notification
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error signing up. Please try again.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
-      }
+
+
+      // If sign-up is successful, show a success notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sign up successful. You can now log in.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      // Navigate to the dashboard after successful sign-up
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => CompleteAddress()),
+      );
+    } catch (e) {
+      // Handle sign-up errors here
+      print('Error signing up: $e');
+      // Show an error notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error signing up. Please try again.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
+  }
 
 
 

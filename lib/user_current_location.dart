@@ -64,16 +64,16 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
           )
       );
 
-      _markers.add(
-          Marker(
-            markerId: MarkerId('marker_2'),
-            position: truckLatLang,
-            // icon: BitmapDescriptor.fromBytes(markerIcon),
-            infoWindow: InfoWindow(
-              title: 'Drivers Location',
-            ),
-          )
-      );
+      // _markers.add(
+      //     Marker(
+      //       markerId: MarkerId('marker_2'),
+      //       position: truckLatLang,
+      //       // icon: BitmapDescriptor.fromBytes(markerIcon),
+      //       infoWindow: InfoWindow(
+      //         title: 'Drivers Location',
+      //       ),
+      //     )
+      // );
 
       // _polyline.add(
       //   Polyline(polylineId: PolylineId('1'),
@@ -138,22 +138,9 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
         foregroundColor: Colors.black,
         onPressed: () async {
 
-          // getUserCurrentLocation().then((value) async{
-          //   print("My Current Location ");
-          //   print(value.latitude.toString() + " " + value.longitude.toString());
-          //   CameraPosition cameraPosition = CameraPosition(
-          //       zoom: 18,
-          //       target: LatLng(value.latitude, value.longitude));
-          //
-          //   final GoogleMapController controller = await _controller.future;
-          //
-          //   controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-          //   setState(() {
-          //
-          //   });
-          //   await getDirections();
-          // });
-          await getDirections();
+
+
+          // await getDirections();
         },
       ),
 
@@ -162,48 +149,48 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
   }
 
   // Method to fetch directions from Google Maps Directions API
-  Future<void> getDirections() async {
-    final apiKey = 'AIzaSyCeQw-v5hINjIaUr6i-MdrfCZTfeP_TsgU'; // Replace with your Google Maps API key
-    final origin = "${_markers[0].position.latitude},${_markers[0].position.longitude}";
-    final destination = "${_markers[1].position.latitude},${_markers[1].position.longitude}";
-    final url = "https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=$apiKey";
-
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data["status"] == "OK") {
-        final List<dynamic> routes = data["routes"];
-        if (routes.isNotEmpty) {
-          final List<dynamic> legs = routes[0]["legs"];
-          final List<LatLng> points = <LatLng>[];
-          for (final dynamic step in legs[0]["steps"]) {
-            final startLocation = step["start_location"];
-            points.add(LatLng(startLocation["lat"], startLocation["lng"]));
-            final polyline = step["polyline"]["points"];
-            final List<LatLng> decodedPolyline = decodePolyline(polyline);
-            points.addAll(decodedPolyline);
-          }
-
-          setState(() {
-            _polyline = {
-              Polyline(
-                polylineId: PolylineId("route"),
-                color: Colors.blue,
-                points: points,
-                width: 5,
-              ),
-            };
-          });
-        }
-      }
-      else {
-        print("Directions API status is not OK: ${data["status"]}");
-      }
-    } else {
-      throw Exception("Failed to load directions Status code: ${response.statusCode}");
-    }
-  }
+  // Future<void> getDirections() async {
+  //   final apiKey = 'AIzaSyCeQw-v5hINjIaUr6i-MdrfCZTfeP_TsgU'; // Replace with your Google Maps API key
+  //   final origin = "${_markers[0].position.latitude},${_markers[0].position.longitude}";
+  //   final destination = "${_markers[1].position.latitude},${_markers[1].position.longitude}";
+  //   final url = "https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=$apiKey";
+  //
+  //   final response = await http.get(Uri.parse(url));
+  //
+  //   if (response.statusCode == 200) {
+  //     final data = json.decode(response.body);
+  //     if (data["status"] == "OK") {
+  //       final List<dynamic> routes = data["routes"];
+  //       if (routes.isNotEmpty) {
+  //         final List<dynamic> legs = routes[0]["legs"];
+  //         final List<LatLng> points = <LatLng>[];
+  //         for (final dynamic step in legs[0]["steps"]) {
+  //           final startLocation = step["start_location"];
+  //           points.add(LatLng(startLocation["lat"], startLocation["lng"]));
+  //           final polyline = step["polyline"]["points"];
+  //           final List<LatLng> decodedPolyline = decodePolyline(polyline);
+  //           points.addAll(decodedPolyline);
+  //         }
+  //
+  //         setState(() {
+  //           _polyline = {
+  //             Polyline(
+  //               polylineId: PolylineId("route"),
+  //               color: Colors.blue,
+  //               points: points,
+  //               width: 5,
+  //             ),
+  //           };
+  //         });
+  //       }
+  //     }
+  //     else {
+  //       print("Directions API status is not OK: ${data["status"]}");
+  //     }
+  //   } else {
+  //     throw Exception("Failed to load directions Status code: ${response.statusCode}");
+  //   }
+  // }
 
   // Method to decode polyline points
   List<LatLng> decodePolyline(String encoded) {

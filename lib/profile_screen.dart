@@ -1,63 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   File? _profileImage;
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Profile'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 CircleAvatar(
-//                   radius: 35,
-//                   backgroundImage: _profileImage != null
-//                       ? FileImage(_profileImage!)
-//                       :Image.asset("assets/images/donate-blood-collage-coronavirus-icons-vector-30596014.png").image,
-//                 ),
-//                 const SizedBox(width: 16),
-//                 const Column(
-//                   children: [
-//                     Text(
-//                       'Harpreet',
-//                       style: TextStyle(fontSize: 20),
-//                     ),
-//                     Text(
-//                       'Driver',
-//                       style: TextStyle(fontSize: 16),
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//             const SizedBox(height: 16),
-//             // ElevatedButton(
-//             //   onPressed: () => _pickImage(ImageSource.gallery),
-//             //   child: const Text('Choose Image'),
-//             // ),
-//             const SizedBox(height: 16),
-//             // Other profile-related fields...
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -65,24 +8,100 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String _displayName = "";
+  String _email = "";
+  String _phoneNumber = "";
+  String _address = "";
+
+  TextEditingController _displayNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneNumberController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
+
+  bool _isEditing = false;
 
   @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userData =
+        await _firestore.collection('driver').doc(user.uid).get();
+
+        setState(() {
+          _displayName = userData['name'];
+          _email = userData['email'];
+          _phoneNumber = userData['phone'];
+          _address = userData['address'];
+
+          // Set initial values for the text input fields
+          _displayNameController.text = _displayName;
+          _emailController.text = _email;
+          _phoneNumberController.text = _phoneNumber;
+          _addressController.text = _address;
+        });
+      }
+    } catch (e) {
+      print("Error loading user data: $e");
+    }
+  }
+
+
+
+  void _toggleEditing() {
+    setState(() {
+      _isEditing = !_isEditing;
+    });
+  }
+
+  void _saveChanges() {
+    // Save the changes to Firestore and update the displayed data
+    _firestore.collection('driver').doc(_auth.currentUser!.uid).update({
+      'name': _displayNameController.text,
+      'email': _emailController.text,
+      'phone': _phoneNumberController.text,
+      'address': _addressController.text,
+    });
+
+    // Update the displayed data
+    setState(() {
+      _displayName = _displayNameController.text;
+      _email = _emailController.text;
+      _phoneNumber = _phoneNumberController.text;
+      _address = _addressController.text;
+      _isEditing = false;
+    });
+  }
+  @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return GestureDetector(
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           top: true,
-
           child: Stack(
             children: [
               Align(
                 alignment: AlignmentDirectional(-0.04, 0.92),
                 child: Padding(
-                  padding: EdgeInsets.only(top: 250.0), // Add this line
+                  padding: EdgeInsets.only(
+                    top: screenHeight * 0.2,
+                    right: screenWidth * 0.05,
+                  ),
                   child: Container(
-                    width: 368,
-                    height: 550,
+                    width: screenWidth * 0.95,
+                    height: screenHeight * 0.85,
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),
@@ -94,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             'Account Info',
                             style: TextStyle(
                               fontFamily: 'Readex Pro',
-                              fontSize: 24,
+                              fontSize: screenWidth * 0.06,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -105,19 +124,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(8),
                             child: Image.asset(
                               'assets/images/user.png',
-                              width: 30,
-                              height: 35,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional(-0.60, -0.62),
-                          child: Text(
-                            'Name',
-                            style: TextStyle(
-                              fontFamily: 'Readex Pro',
-                              fontWeight: FontWeight.w500,
+                              width: screenWidth * 0.05,
+                              height: screenHeight * 0.035,
+                              fit: BoxFit.fitWidth,
                             ),
                           ),
                         ),
@@ -133,11 +142,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Align(
                           alignment: AlignmentDirectional(-0.50, -0.55),
-                          child: Text(
-                            'Nitish Churiwala',
-                            style: TextStyle(
-                              fontFamily: 'Readex Pro',
-                              fontWeight: FontWeight.w500,
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                              0,
+                              0,
+                              screenWidth * 0.1,
+                              0,
+                            ),
+                            child: Text(
+                              _displayName,
+                              style: TextStyle(
+                                fontFamily: 'Readex Pro',
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
@@ -147,9 +164,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(8),
                             child: Image.asset(
                               'assets/images/phone-call.png',
-                              width: 30,
-                              height: 35,
-                              fit: BoxFit.cover,
+                              width: screenWidth * 0.05,
+                              height: screenHeight * 0.035,
+                              fit: BoxFit.fitWidth,
                             ),
                           ),
                         ),
@@ -165,11 +182,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Align(
                           alignment: AlignmentDirectional(-0.48, -0.32),
-                          child: Text(
-                            '+919632587416',
-                            style: TextStyle(
-                              fontFamily: 'Readex Pro',
-                              fontWeight: FontWeight.w500,
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                              0,
+                              0,
+                              screenWidth * 0.05,
+                              0,
+                            ),
+                            child: Text(
+                              _phoneNumber,
+                              style: TextStyle(
+                                fontFamily: 'Readex Pro',
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
@@ -179,9 +204,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             borderRadius: BorderRadius.circular(8),
                             child: Image.asset(
                               'assets/images/mail.png',
-                              width: 32,
-                              height: 40,
-                              fit: BoxFit.cover,
+                              width: screenWidth * 0.06,
+                              height: screenHeight * 0.04,
+                              fit: BoxFit.fitWidth,
                             ),
                           ),
                         ),
@@ -198,24 +223,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Align(
                           alignment: AlignmentDirectional(0.44, -0.09),
                           child: Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 18, 0),
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                              0,
+                              0,
+                              screenWidth * 0.33,
+                              0,
+                            ),
                             child: Text(
-                              'nitish.churiwala@bca.christuniversity.in',
+                              _email,
                               style: TextStyle(
                                 fontFamily: 'Readex Pro',
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),),
+                          ),
+                        ),
                         Align(
                           alignment: AlignmentDirectional(-0.84, 0.10),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.asset(
                               'assets/images/maps-and-flags.png',
-                              width: 32,
-                              height: 35,
-                              fit: BoxFit.cover,
+                              width: screenWidth * 0.06,
+                              height: screenHeight * 0.035,
+                              fit: BoxFit.fitWidth,
                             ),
                           ),
                         ),
@@ -232,15 +263,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Align(
                           alignment: AlignmentDirectional(-0.11, 0.15),
                           child: Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 18, 0),
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                              0,
+                              0,
+                              screenWidth * 0.24,
+                              0,
+                            ),
                             child: Text(
-                              'Kalpavriksha Student Housing',
+                              _address,
                               style: TextStyle(
                                 fontFamily: 'Readex Pro',
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -249,38 +286,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Align(
                 alignment: AlignmentDirectional(-0.18, -1.00),
                 child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 0),
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
                   child: Container(
-                    width: 368,
-                    height: 251,
+                    width: screenWidth,
+                    height: screenHeight * 0.2,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFF88AF76), Color(0xFF1AA51F)],
+                        colors: [Color(0xFFCAD999), Color(0xFF1AA51F)],
                         stops: [0, 1],
                         begin: AlignmentDirectional(0, -1),
                         end: AlignmentDirectional(0, 1),
                       ),
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(0),
-                        bottomRight: Radius.circular(0),
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50),
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                        topLeft: Radius.circular(0),
+                        topRight: Radius.circular(0),
                       ),
                     ),
                     child: Stack(
                       children: [
                         Align(
                           alignment: AlignmentDirectional(0.00, -0.16),
-                          child: Padding(
-                            padding:
-                            EdgeInsetsDirectional.fromSTEB(135, 0, 135, 0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: Image.network(
-                                'https://picsum.photos/seed/180/600',
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
+                          child: GestureDetector(
+                            onTap: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: screenWidth * 0.82,
+                                bottom: screenHeight * 0.12,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.network(
+                                  'https://picsum.photos/seed/180/600',
+                                  width: screenWidth * 0.12,
+                                  height: screenWidth * 0.12,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
@@ -288,22 +332,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Align(
                           alignment: AlignmentDirectional(0.00, 0.61),
                           child: Text(
-                            'Nitish Churiwala',
+                            'Driver',
                             style: TextStyle(
+                              color: Color(0xFFD6EAEA),
                               fontFamily: 'Readex Pro',
-                              fontSize: 20,
+                              fontSize: screenWidth * 0.08,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                         Align(
-                          alignment: AlignmentDirectional(-0.03, 0.85),
-                          child: Text(
-                            'Consumer',
-                            style: TextStyle(
-                              fontFamily: 'Readex Pro',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                          alignment: AlignmentDirectional(0.00, 0.61),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: screenWidth * 0.6,
+                              bottom: screenHeight * 0.12,
+                            ),
+                            child: Text(
+                              'Ecotrak',
+                              style: TextStyle(
+                                color: Color(0xFF555E44),
+                                fontFamily: 'Readex Pro',
+                                fontSize: screenWidth * 0.1,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
@@ -312,6 +364,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
+              if (!_isEditing)
+                Positioned(
+                  bottom: 16.0, // Adjust the position as needed
+                  right: 16.0, // Adjust the position as needed
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      _toggleEditing();
+                    },
+                    backgroundColor: Colors.blue,
+                    child: Icon(Icons.edit),
+                  ),
+                ),
+              if (_isEditing)
+                Positioned(
+                  top: screenHeight * 0.2,
+                  right: screenWidth * 0.05,
+                  child: Container(
+                    width: screenWidth * 0.95,
+                    height: screenHeight * 0.85,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: ListView(
+                      padding: EdgeInsets.all(16.0),
+                      children: [
+                        TextFormField(
+                          controller: _displayNameController,
+                          decoration: InputDecoration(labelText: 'Name'),
+                        ),
+                        SizedBox(height: 16.0),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(labelText: 'Email Address'),
+                        ),
+                        SizedBox(height: 16.0),
+                        TextFormField(
+                          controller: _phoneNumberController,
+                          decoration: InputDecoration(labelText: 'Mobile Number'),
+                        ),
+                        SizedBox(height: 16.0),
+                        TextFormField(
+                          controller: _addressController,
+                          decoration: InputDecoration(labelText: 'Address'),
+                        ),
+                        SizedBox(height: 16.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            _saveChanges();
+                          },
+                          child: Text('Save Changes'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'package:ecotrak_driver/rewardsGeneratiing.dart';
 import 'package:ecotrak_driver/screens/Welcome/welcome_screen.dart';
+import 'package:ecotrak_driver/user_current_location.dart';
 import 'package:flutter/material.dart';
-import 'track_truck_screen.dart';
-import 'profile_screen.dart';
 import 'manage_booking_screen.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -21,23 +25,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
   String get currentUserId => _auth.currentUser?.uid ?? '';
+  String displayName = '';
+
+  Future<void> _loadUserData() async {
+    try {
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userData =
+        await _firestore.collection('driver').doc(user.uid).get();
+        displayName = userData['name'];
+
+        // Check if the profile image URL is available in Firestore
+        final String? profileImageUrl = userData['profileImage'];
+        if (profileImageUrl != null) {
+          // If the URL is available, load and display the image
+          setState(() {
+            _profileImage = null; // Clear the existing profile image
+          });
+        }
+        else
+          print("Profile Image not found");
+      }
+    } catch (e) {
+      print("Error loading user data: $e");
+    }
+  }
+
   final List<Widget> _widgetOptions = [
     // TrackTruckScreen(),
     //MapSample(),
-    TrackTruckScreen(),
+    GetUserCurrentLocationScreen(),
     ProfileScreen(),
     ManageBookingScreen(),
+    // CompleteAddress(),
+    RewardsGenerate(),
   ];
 
   @override
   void initState() {
     super.initState();
+    _loadUserData();
     // Call the function to get the current location when the screen loads
     _getCurrentLocation();
   }
 
-  // Function to get the current location
-  // Function to get the current location
+
   // Function to get the current location
   void _getCurrentLocation() async {
     try {
@@ -95,14 +127,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
 
+  Future<void> _pickAndUploadImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final File imageFile = File(pickedFile.path);
+
+      try {
+        // Upload the image to Firebase Storage
+        String fileName = 'profile_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        Reference storageReference = FirebaseStorage.instance.ref().child('profile_images/$fileName');
+        await storageReference.putFile(imageFile);
+
+        // Get the download URL of the uploaded image
+        String imageUrl = await storageReference.getDownloadURL();
+
+        // Update the profile image URL in Firestore
+        await _firestore.collection('driver').doc(currentUserId).update({'profileImage': imageUrl});
+
+        setState(() {
+          // Update the UI with the new profile image
+          _profileImage = imageFile;
+        });
+
+        print('Profile image updated successfully');
+      } catch (e) {
+        print('Error updating profile image: $e');
+      }
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ecotrak'),
-          backgroundColor: Colors.green
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Ecotrak'),
+      //     backgroundColor: Colors.green
+      // ),
       drawer: buildSidebar(context),
       body: _widgetOptions[_selectedIndex],
       bottomNavigationBar: buildBottomNavigationBar(),
@@ -132,7 +196,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'John Doe', // Replace with user's name
+                      displayName, // Replace with user's name
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -140,7 +204,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Premium Member', // Replace with user's membership status
+                      ' ', // Replace with user's membership status
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -153,20 +217,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           ListTile(
             leading: Icon(Icons.star),
-            title: Text('Rewards'),
+            title: Text('Generate Rewards'),
             onTap: () {
-              // Navigate to rewards screen
-              Navigator.pushNamed(context, '/rewards');
+              setState(() {
+                _selectedIndex = 2;
+              });
+              Navigator.pop(context);
             },
           ),
           ListTile(
             leading: Icon(Icons.image),
             title: Text('Change Profile Picture'),
-            // onTap: () async {
-            //   await _pickImage(ImageSource.gallery);
-            //   Navigator.pop(context); // Close the drawer after selecting image
-            // },
-
+            onTap: () {
+              _pickAndUploadImage();
+              Navigator.pop(context); // Close the drawer after selecting image
+            },
           ),
           ListTile(
               leading: Icon(Icons.exit_to_app), // Logout icon
