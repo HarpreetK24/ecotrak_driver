@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -5,11 +6,15 @@ class BookingRequest {
   final String date;
   final String time;
   final String location;
+  final String allotedDriver;
+  final int requirement;
 
   BookingRequest({
     required this.date,
     required this.time,
     required this.location,
+    required this.allotedDriver,
+    required this.requirement,
   });
 
   factory BookingRequest.fromMap(Map<String, dynamic> data) {
@@ -17,14 +22,23 @@ class BookingRequest {
       date: data['date'] ?? '',
       time: data['time'] ?? '',
       location: data['location'] ?? '',
+      allotedDriver: data['closestDriverName'],
+      requirement: data['specialRequirements'],
     );
   }
 }
 
 class ManageBookingScreen extends StatelessWidget {
+  late String currentDriverName; // Declare as late
+
   Future<List<BookingRequest>> fetchBookingRequests() async {
-    final querySnapshot =
-    await FirebaseFirestore.instance.collection('bookings').get();
+    currentDriverName = await getName(); // Assign the value here
+
+    print(currentDriverName);
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('bookings')
+        .where('closestDriverName', isEqualTo: currentDriverName)
+        .get();
 
     final requests = querySnapshot.docs.map((doc) {
       final data = doc.data();
@@ -32,6 +46,23 @@ class ManageBookingScreen extends StatelessWidget {
     }).toList();
 
     return requests;
+  }
+
+  Future<String> getName() async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    String myName = '';
+
+    final User? user = _auth.currentUser;
+    if (user != null) {
+      final DocumentSnapshot userData =
+      await _firestore.collection('driver').doc(user.uid).get();
+      myName = userData['name'];
+      print("My Name = " + myName);
+      // print("user found");
+    }
+
+    return myName;
   }
 
   @override
@@ -49,6 +80,7 @@ class ManageBookingScreen extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final List<BookingRequest>? data = snapshot.data;
+            print(data?.length);
             if (data == null || data.isEmpty) {
               return Center(child: Text('No booking requests available.'));
             } else {
@@ -71,9 +103,13 @@ class ManageBookingScreen extends StatelessWidget {
                               fontSize: 16,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 30),
                           Text(
                             'Location: ${request.location}',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          Text(
+                            'Weight: ${request.requirement == 0 ? '0 - 50 Kg' : (request.requirement == 1 ? '50 - 100 Kg' : 'More than 100 Kg')}',
                             style: TextStyle(fontSize: 14),
                           ),
                         ],
