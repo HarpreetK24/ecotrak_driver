@@ -29,14 +29,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _loadUserData() async {
     try {
+      print("Load Data Enter ");
       final User? user = _auth.currentUser;
       if (user != null) {
         final DocumentSnapshot userData =
         await _firestore.collection('driver').doc(user.uid).get();
         displayName = userData['name'];
 
+        print("User Name Found");
         // Check if the profile image URL is available in Firestore
         final String? profileImageUrl = userData['profileImage'];
+        print("Profile URL found" + profileImageUrl!);
         if (profileImageUrl != null) {
           // If the URL is available, load and display the image
           setState(() {
@@ -56,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     //MapSample(),
     GetUserCurrentLocationScreen(),
     ProfileScreen(),
-    ManageBookingScreen(),
+    // ManageBookingScreen(),
     // CompleteAddress(),
     RewardsGenerate(),
   ];

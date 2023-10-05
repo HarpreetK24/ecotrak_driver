@@ -52,6 +52,7 @@ dependencies:
   pointycastle: ^3.7.3
   rsa_encrypt: ^2.0.0
   firebase_storage: ^11.2.8
+  flutter_local_notifications: ^9.1.1
 
 
 
