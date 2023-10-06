@@ -58,25 +58,33 @@ class _RewardsGenerateState extends State<RewardsGenerate> {
   Future<void> expireUpdate() async {
     DocumentReference documentReference = firestore.collection('rewards').doc(qrData);
 
-    // Update the status field of the document
-    await documentReference.update({
-      'status': 'expired',
-    });
+    final DocumentSnapshot userData =
+      await firestore.collection('rewards').doc(qrData).get();
+
+    String currentStatus = userData['status'];
+
+    if(currentStatus == 'created') {
+      // Update the status field of the document
+      await documentReference.update({
+        'status': 'expired',
+      });
+    }
 
   }
 
   Future<void> generateRewards(String weight, String garbageType) async {
     String id = "";
     int rewards = 0;
+
     try {
 
       if (garbageType == 'Biodegradable') {
-        int w = int.parse(weight);
-        int c = w * 2; // 2 coins per Kg
+        double w = double.parse(weight);
+        double c = w * 2; // 2 coins per Kg
         rewards = c.round();
       } else if (garbageType == 'Non-Biodegradable') {
-        int w = int.parse(weight);
-        int c = w * 3; // 3 coins per Kg
+        double w = double.parse(weight);
+        double c = w * 5; // 3 coins per Kg
         rewards = c.round();
       }
 

@@ -166,10 +166,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Ecotrak'),
-      //     backgroundColor: Colors.green
-      // ),
+
       drawer: buildSidebar(context),
       body: _widgetOptions[_selectedIndex],
       bottomNavigationBar: buildBottomNavigationBar(),
@@ -183,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.green,
+              color: Color(0xFF009688),
             ),
             child: Row(
               children: [
@@ -272,7 +269,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ],
       currentIndex: _selectedIndex,
-      selectedItemColor: Colors.green,
+      selectedItemColor: Color(0xFF009688),
       unselectedItemColor: Colors.black,
       onTap: _onItemTapped,
     );

@@ -96,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 alignment: AlignmentDirectional(-0.04, 0.92),
                 child: Padding(
                   padding: EdgeInsets.only(
-                    top: screenHeight * 0.2,
+                    top: screenHeight * 0.09,
                     right: screenWidth * 0.05,
                   ),
                   child: Container(
@@ -144,16 +144,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           alignment: AlignmentDirectional(-0.50, -0.55),
                           child: Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
+                              61.5,
+                              135,
                               0,
-                              0,
-                              screenWidth * 0.1,
                               0,
                             ),
-                            child: Text(
-                              _displayName,
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontWeight: FontWeight.w500,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Text(
+                                _displayName,
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
@@ -184,16 +188,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           alignment: AlignmentDirectional(-0.48, -0.32),
                           child: Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
+                              63,
+                              198,
                               0,
-                              0,
-                              screenWidth * 0.05,
                               0,
                             ),
-                            child: Text(
-                              _phoneNumber,
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontWeight: FontWeight.w500,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Text(
+                                _phoneNumber,
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
@@ -224,16 +232,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           alignment: AlignmentDirectional(0.44, -0.09),
                           child: Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
+                              65,
+                              268,
                               0,
-                              0,
-                              screenWidth * 0.33,
                               0,
                             ),
-                            child: Text(
-                              _email,
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontWeight: FontWeight.w500,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Text(
+                                _email,
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
@@ -263,22 +275,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Align(
                           alignment: AlignmentDirectional(-0.11, 0.15),
                           child: Padding(
+
                             padding: EdgeInsetsDirectional.fromSTEB(
-                              0,
-                              0,
-                              screenWidth * 0.24,
-                              0,
+                                66,
+                                342,
+                                0,0
                             ),
-                            child: Text(
-                              _address,
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontWeight: FontWeight.w500,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: double.infinity,
+                              child: Text(
+                                _address,
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ),],
                     ),
                   ),
                 ),
@@ -289,7 +304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
                   child: Container(
                     width: screenWidth,
-                    height: screenHeight * 0.2,
+                    height: screenHeight * 0.1,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Color(0xFFCAD999), Color(0xFF1AA51F)],
@@ -307,56 +322,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Stack(
                       children: [
                         Align(
-                          alignment: AlignmentDirectional(0.00, -0.16),
-                          child: GestureDetector(
-                            onTap: () {
-                              Scaffold.of(context).openDrawer();
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: screenWidth * 0.82,
-                                bottom: screenHeight * 0.12,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  'https://picsum.photos/seed/180/600',
-                                  width: screenWidth * 0.12,
-                                  height: screenWidth * 0.12,
-                                  fit: BoxFit.cover,
+                          alignment: AlignmentDirectional(-1.00, 0.00),
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Color(0xFF009688),
+                            ),
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: AlignmentDirectional(0.00, -0.81),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            30, 20, 20, 20),
+                                        child: Text(
+                                          'Hi '+ _displayName,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                Align(
+                                  alignment: AlignmentDirectional(0.00, -0.16),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Scaffold.of(context).openDrawer();
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: screenWidth * 0.82,
+                                          // bottom: screenHeight * 0.,
+                                          top: screenHeight * 0
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.network(
+                                          'https://picsum.photos/seed/180/600',
+                                          width: screenWidth * 0.12,
+                                          height: screenWidth * 0.12,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              ],
                             ),
-                          ),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional(0.00, 0.61),
-                          child: Text(
-                            'Driver',
-                            style: TextStyle(
-                              color: Color(0xFFD6EAEA),
-                              fontFamily: 'Readex Pro',
-                              fontSize: screenWidth * 0.08,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional(0.00, 0.61),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              right: screenWidth * 0.6,
-                              bottom: screenHeight * 0.12,
-                            ),
-                            child: Text(
-                              'Ecotrak',
-                              style: TextStyle(
-                                color: Color(0xFF555E44),
-                                fontFamily: 'Readex Pro',
-                                fontSize: screenWidth * 0.1,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+
                           ),
                         ),
                       ],
