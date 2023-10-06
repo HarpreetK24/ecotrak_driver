@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:ecotrak_driver/bookings.dart';
 import 'package:ecotrak_driver/rewardsGeneratiing.dart';
 import 'package:ecotrak_driver/screens/Welcome/welcome_screen.dart';
 import 'package:ecotrak_driver/user_current_location.dart';
@@ -61,6 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ProfileScreen(),
     // ManageBookingScreen(),
     // CompleteAddress(),
+    MyBookingPageWidget(),
     RewardsGenerate(),
   ];
 
@@ -220,7 +222,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             title: Text('Generate Rewards'),
             onTap: () {
               setState(() {
-                _selectedIndex = 2;
+                _selectedIndex = 3;
               });
               Navigator.pop(context);
             },
@@ -266,6 +268,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
           label: 'Manage Booking',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.star),
+          label: 'Create Rewards',
         ),
       ],
       currentIndex: _selectedIndex,
