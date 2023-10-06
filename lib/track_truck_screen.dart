@@ -31,14 +31,29 @@ class TrackTruckScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: GoogleMap(
-          initialCameraPosition: _kGooglePlex,
-          markers: _markers,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-        ),
+
+
+      body: Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: _kGooglePlex,
+            markers: _markers,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: ElevatedButton(
+              onPressed: () {
+                // _startSession(context);
+              },
+              child: Text("Start Session"),
+            ),
+          ),
+        ],
       ),
 
       //Code to travel to a location when the user clicks on a button.

@@ -71,65 +71,65 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     _loadUserData();
     // Call the function to get the current location when the screen loads
-    _getCurrentLocation();
+    // _getCurrentLocation();
   }
 
-
-  // Function to get the current location
-  void _getCurrentLocation() async {
-    try {
-      // Request permission to access the device's location
-      final bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!isLocationServiceEnabled) {
-        // Handle the case where location services are disabled
-        // You can display a message or guide the user to enable location services
-        return;
-      }
-
-      final LocationPermission permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Handle the case where the user denied location permissions
-        // You can display a message or guide the user to enable location permissions
-        return;
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        // Handle the case where the user denied location permissions permanently
-        // You can display a message or guide the user to app settings
-        return;
-      }
-
-      // Get the current location
-      final Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
-      );
-
-      setState(() {
-        _currentPosition = position; // Store the current location
-        print(_currentPosition);
-      });
-      if(_currentPosition != null) {
-        // Create a GeoPoint from the latitude and longitude
-        GeoPoint geoPoint = GeoPoint(_currentPosition!.latitude, _currentPosition!.longitude);
-
-        // Get a reference to the driver's document in the "drivers" collection
-        DocumentReference driverDocRef = _firestore.collection('driver').doc(currentUserId);
-
-        // Update the location field in the driver's document
-        // Update the location field in the driver's document
-        await driverDocRef.update({'location': geoPoint}).then((_) {
-          print("Location updated successfully");
-        }).catchError((error) {
-          print("Error updating location: $error");
-        });
-      }
-      else {
-        print("it is null");
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
+  //
+  // // Function to get the current location
+  // void _getCurrentLocation() async {
+  //   try {
+  //     // Request permission to access the device's location
+  //     final bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+  //     if (!isLocationServiceEnabled) {
+  //       // Handle the case where location services are disabled
+  //       // You can display a message or guide the user to enable location services
+  //       return;
+  //     }
+  //
+  //     final LocationPermission permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       // Handle the case where the user denied location permissions
+  //       // You can display a message or guide the user to enable location permissions
+  //       return;
+  //     }
+  //
+  //     if (permission == LocationPermission.deniedForever) {
+  //       // Handle the case where the user denied location permissions permanently
+  //       // You can display a message or guide the user to app settings
+  //       return;
+  //     }
+  //
+  //     // Get the current location
+  //     final Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.best,
+  //     );
+  //
+  //     setState(() {
+  //       _currentPosition = position; // Store the current location
+  //       print(_currentPosition);
+  //     });
+  //     if(_currentPosition != null) {
+  //       // Create a GeoPoint from the latitude and longitude
+  //       GeoPoint geoPoint = GeoPoint(_currentPosition!.latitude, _currentPosition!.longitude);
+  //
+  //       // Get a reference to the driver's document in the "drivers" collection
+  //       DocumentReference driverDocRef = _firestore.collection('driver').doc(currentUserId);
+  //
+  //       // Update the location field in the driver's document
+  //       // Update the location field in the driver's document
+  //       await driverDocRef.update({'location': geoPoint}).then((_) {
+  //         print("Location updated successfully");
+  //       }).catchError((error) {
+  //         print("Error updating location: $error");
+  //       });
+  //     }
+  //     else {
+  //       print("it is null");
+  //     }
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
 
 
   Future<void> _pickAndUploadImage() async {
