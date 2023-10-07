@@ -17,7 +17,7 @@ class GetUserCurrentLocationScreen extends StatefulWidget {
   State<GetUserCurrentLocationScreen> createState() => _GetUserCurrentLocationScreenState();
 }
 
-class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScreen> {
+class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScreen> with TickerProviderStateMixin{
 
   Completer<GoogleMapController> _controller = Completer();
   Uint8List? markerImages;
@@ -29,6 +29,11 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
   String get currentUserId => _auth.currentUser?.uid ?? '';
+
+  String _displayName = "";
+  AnimationController? _animationController;
+  late Animation<Offset> _slideAnimation;
+  bool _hasShownWelcome = false;
 
   static final CameraPosition _kGooglePlex = const CameraPosition(
     target: LatLng(12.93626232871436, 77.60621561694676),
@@ -48,6 +53,23 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
   List<LatLng> pointslatlng = [];
 
   final List<Marker> _markers = <Marker>[];
+
+  Future<void> _loadUserData() async {
+    try {
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userData =
+        await _firestore.collection('driver').doc(user.uid).get();
+
+        setState(() {
+          _displayName = userData['name'];
+        });
+      }
+    } catch (e) {
+      print("Error loading user data: $e");
+    }
+  }
+
 
   //Loading the Location of the User on app start
   //Storing the user Current Longitude and Latitude and fetching it using LatLng(value.latitude, value.longitude))
@@ -119,14 +141,84 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
   void initState() {
     super.initState();
     loadData();
+    _loadUserData();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2), // Adjust the duration as needed
+    );
 
+    // Create a slide animation
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(-1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController!,
+      curve: Curves.easeInOut,
+    ));
+
+    // Start the animation
+    _animationController!.forward();
+
+    // Simulate destroying the animation after a delay
+    Future.delayed(Duration(seconds: 4), () {
+      setState(() {
+        _hasShownWelcome = true; // Mark animation as complete
+      });
+      _animationController!.dispose();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: SafeArea(
-        child: GoogleMap(
+        top: true,
+        child: Column(
+          children: [
+          Container(
+          height: 80,
+          child : AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Color(0xFF009688),
+            title: true
+                ? Text(
+              _hasShownWelcome ? 'Hi ' + _displayName : 'Welcome to Ecotrak',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFFFFFFFF),
+              ),
+            )
+                : null,
+            actions: <Widget>[
+              if (true)
+                GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child:Padding(
+                    padding: EdgeInsets.fromLTRB(33, 3.6, 10, 0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(
+                        'https://picsum.photos/seed/180/600',
+                        width: screenWidth * 0.12,
+                        height: screenWidth * 0.12,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),),
+            ],
+          ),
+        ),
+        Align(
+        child: Container(
+        height: screenHeight * 0.773,
+        padding: EdgeInsets.only(top: screenHeight * 0),
+         child : GoogleMap(
           zoomControlsEnabled: false,
           myLocationButtonEnabled: false,
           initialCameraPosition: _kGooglePlex,
@@ -136,8 +228,11 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
           },
           polylines: _polyline,
         ),
-      ),
-
+        ),
+        ),
+          ],
+        ),
+    ),
       // Code to travel to a location when the user clicks on a button.
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,

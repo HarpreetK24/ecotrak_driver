@@ -50,25 +50,52 @@ class _MyBookingPageWidgetState extends State<MyBookingPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: Color(0xFFE1F5FE),
-        body: SafeArea(
-          top: true,
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Text(
-                  'My Bookings',
-                  style: TextStyle(
-                    fontFamily: 'Readex Pro',
-                    color: Colors.black,
-                    fontSize: 18,
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      backgroundColor: Color(0xFFE1F5FE),
+      body: SafeArea(
+        top: true,
+        child: Column(
+          children: [
+          Container(
+          height: 80,
+          child : AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Color(0xFF009688),
+            title: true
+                ? Text(
+              true ? 'Manage Booking'  : '',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFFFFFFFF),
+              ),
+            )
+                : null,
+            actions: <Widget>[
+              if (true)
+                GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child:Padding(
+                    padding: EdgeInsets.fromLTRB(33, 3.6, 10, 0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(
+                        'https://picsum.photos/seed/180/600',
+                        width: screenWidth * 0.12,
+                        height: screenWidth * 0.12,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
+            ],
+          ),
+        ),
+
                 Expanded(
                   child: ListView.builder(
                     itemCount: userBookings.length,
@@ -209,20 +236,24 @@ class _MyBookingPageWidgetState extends State<MyBookingPageWidget> {
                                       ),
                                     ],
                                   ),
+
                                 ],
                               ),
                             ),
                           ),
-                        ),
-                      );
+                        ));
                     },
                   ),
                 ),
-              ],
-            ),
-          ),
+          ],
+
+
         ),
+
       ),
+
+
+
     );
   }
 

@@ -35,7 +35,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (user != null) {
         final DocumentSnapshot userData =
         await _firestore.collection('driver').doc(user.uid).get();
-        displayName = userData['name'];
+        setState(() {
+          displayName = userData['name'];
+        });
 
         print("User Name Found");
         // Check if the profile image URL is available in Firestore
@@ -198,7 +200,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      displayName, // Replace with user's name
+                     displayName, // Replace with user's name
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
