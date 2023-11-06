@@ -87,7 +87,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       backgroundColor: Color(0xFFE1F5FE),
-      body: SafeArea(
+      body: SingleChildScrollView(
+    child: SafeArea(
         top: true,
         child: Column(
             children: [
@@ -179,17 +180,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             Align(
-                              alignment: AlignmentDirectional(-0.50, -0.55),
+                              alignment: FractionalOffset(0.42, 0), // Horizontal alignment at 0.44 (44% from the left), and vertical alignment at the top (0.0).
                               child: Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                  61.5,
-                                  135,
+                                padding: EdgeInsets.fromLTRB(
+                                  MediaQuery.of(context).size.width * 0.175,
+                                  MediaQuery.of(context).size.height * 0.167, // Adjust the padding based on screen height.
                                   0,
                                   0,
                                 ),
                                 child: SizedBox(
                                   width: double.infinity,
-                                  height: screenHeight * 5,
+                                  height: MediaQuery.of(context).size.height * 5, // Set the height based on screen height.
                                   child: Text(
                                     _displayName,
                                     style: TextStyle(
@@ -223,17 +224,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             Align(
-                              alignment: AlignmentDirectional(-0.48, -0.32),
+                              alignment: FractionalOffset(0.42, 0), // Horizontal alignment at 0.44 (44% from the left), and vertical alignment at the top (0.0).
                               child: Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                  63,
-                                  195,
+                                padding: EdgeInsets.fromLTRB(
+                                  MediaQuery.of(context).size.width * 0.185,
+                                  MediaQuery.of(context).size.height * 0.247, // Adjust the padding based on screen height.
                                   0,
                                   0,
                                 ),
                                 child: SizedBox(
                                   width: double.infinity,
-                                  height: screenHeight * 5,
+                                  height: MediaQuery.of(context).size.height * 5, // Set the height based on screen height.
                                   child: Text(
                                     _phoneNumber,
                                     style: TextStyle(
@@ -267,17 +268,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             Align(
-                              alignment: AlignmentDirectional(0.44, -0.09),
+                              alignment: FractionalOffset(0.42, 0), // Horizontal alignment at 0.44 (44% from the left), and vertical alignment at the top (0.0).
                               child: Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                  65,
-                                  265,
+                                padding: EdgeInsets.fromLTRB(
+                                  MediaQuery.of(context).size.width * 0.185,
+                                  MediaQuery.of(context).size.height * 0.335, // Adjust the padding based on screen height.
                                   0,
                                   0,
                                 ),
                                 child: SizedBox(
                                   width: double.infinity,
-                                  height: screenHeight * 5,
+                                  height: MediaQuery.of(context).size.height * 5, // Set the height based on screen height.
                                   child: Text(
                                     _email,
                                     style: TextStyle(
@@ -288,6 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                             ),
+
                             Align(
                               alignment: AlignmentDirectional(-0.84, 0.10),
                               child: ClipRRect(
@@ -311,17 +313,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             Align(
-                              alignment: AlignmentDirectional(-0.11, 0.15),
+                              alignment: FractionalOffset(0.42, 0), // Horizontal alignment at 0.44 (44% from the left), and vertical alignment at the top (0.0).
                               child: Padding(
-
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    66,
-                                    335,
-                                    0,0
+                                padding: EdgeInsets.fromLTRB(
+                                  MediaQuery.of(context).size.width * 0.185,
+                                  MediaQuery.of(context).size.height * 0.425, // Adjust the padding based on screen height.
+                                  0,
+                                  0,
                                 ),
                                 child: SizedBox(
                                   width: double.infinity,
-                                  height: screenHeight * 5,
+                                  height: MediaQuery.of(context).size.height * 5, // Set the height based on screen height.
                                   child: Text(
                                     _address,
                                     style: TextStyle(
@@ -520,6 +522,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ]),
+      ),
       ),
     );
   }

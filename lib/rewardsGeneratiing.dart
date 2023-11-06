@@ -132,7 +132,8 @@ class _RewardsGenerateState extends State<RewardsGenerate> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: SafeArea(
+      body: SingleChildScrollView(
+        child : SafeArea(
         top: true,
         child: Column(
           children: [
@@ -355,6 +356,6 @@ class _RewardsGenerateState extends State<RewardsGenerate> {
           ),
         )]),
       ),
-    );
+      ));
   }
 }
