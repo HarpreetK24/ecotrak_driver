@@ -25,6 +25,9 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
   LatLng truckLatLang = LatLng(12.93626232871436, 77.60621561694676);
   bool isDriverAvailable = false;
   bool isSessionActive = false;
+
+
+
   Position? _currentPosition; // Store the current location
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance

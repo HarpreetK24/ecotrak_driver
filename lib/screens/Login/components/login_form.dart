@@ -103,22 +103,38 @@ class _LoginFormState extends State<LoginForm> {
       if(driverQuery.docs.isNotEmpty) {
         //USer is driver
         // If sign-in is successful, show a success
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Login successful'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-        // Navigate to the dashboard
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => DashboardScreen()),
-        );
+        final driverData = driverQuery.docs.first.data() as Map<String,
+            dynamic>;
+        final driverStatus = driverData['status']; // Assuming the field is named 'status'
+
+        if (driverStatus != 'Active') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Your account is blocked by the admin'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+
+        else {
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login successful'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+          // Navigate to the dashboard
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => DashboardScreen()),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -127,7 +143,6 @@ class _LoginFormState extends State<LoginForm> {
           ),
         );
       }
-
 
     } catch (e) {
       // Handle sign-in errors here
