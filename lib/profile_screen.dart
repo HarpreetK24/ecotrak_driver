@@ -17,8 +17,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _address = "";
 
   TextEditingController _displayNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
 
   bool _isEditing = false;
@@ -44,8 +42,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           // Set initial values for the text input fields
           _displayNameController.text = _displayName;
-          _emailController.text = _email;
-          _phoneNumberController.text = _phoneNumber;
           _addressController.text = _address;
         });
       }
@@ -66,16 +62,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // Save the changes to Firestore and update the displayed data
     _firestore.collection('driver').doc(_auth.currentUser!.uid).update({
       'name': _displayNameController.text,
-      'email': _emailController.text,
-      'phone': _phoneNumberController.text,
       'address': _addressController.text,
     });
 
     // Update the displayed data
     setState(() {
       _displayName = _displayNameController.text;
-      _email = _emailController.text;
-      _phoneNumber = _phoneNumberController.text;
       _address = _addressController.text;
       _isEditing = false;
     });
@@ -395,75 +387,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 fillColor: Color(0xFFE1F5FE),),
-                            ),
-                            SizedBox(height: 16.0),
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: InputDecoration(labelText: 'Email Address',
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                fillColor: Color(0xFFE1F5FE),),
-                            ),
-                            SizedBox(height: 16.0),
-                            TextFormField(
-                              controller: _phoneNumberController,
-                              decoration: InputDecoration(labelText: 'Mobile Number',
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                fillColor: Color(0xFFE1F5FE),
-                              ),
                             ),
                             SizedBox(height: 16.0),
                             TextFormField(
