@@ -156,6 +156,7 @@ class _SignUpFormState extends State<SignUpForm> {
         'name': _nameController.text,
         'phone': _phoneController.text,
         'email': _emailController.text,
+        'profileImageUrl' : "",
       });
 
 

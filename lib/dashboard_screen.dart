@@ -27,6 +27,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
   String get currentUserId => _auth.currentUser?.uid ?? '';
   String displayName = '';
+  String _image = "";
+  String? _profileImageUrl;
+
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedImage = await ImagePicker().pickImage(source: source);
+    if (pickedImage != null) {
+      final imageFile = File(pickedImage.path);
+      final User? user = _auth.currentUser;
+
+      if (user != null) {
+        final ref = _storage.ref().child('profile_images/${user.uid}');
+        await ref.putFile(imageFile);
+
+        final imageUrl = await ref.getDownloadURL();
+
+        // Set the profile image URL directly
+        setState(() {
+          _profileImage = imageFile;
+          _profileImageUrl = imageUrl;
+        });
+
+        await _firestore.collection('driver').doc(user.uid).update({
+          'profileImageUrl': imageUrl,
+        });
+      }
+    }
+  }
 
   Future<void> _loadUserData() async {
     try {
@@ -37,20 +66,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         await _firestore.collection('driver').doc(user.uid).get();
         setState(() {
           displayName = userData['name'];
+          _image = userData['profileImageUrl'];
         });
-
-        print("User Name Found");
-        // Check if the profile image URL is available in Firestore
-        final String? profileImageUrl = userData['profileImage'];
-        print("Profile URL found" + profileImageUrl!);
-        if (profileImageUrl != null) {
-          // If the URL is available, load and display the image
-          setState(() {
-            _profileImage = null; // Clear the existing profile image
-          });
-        }
-        else
-          print("Profile Image not found");
       }
     } catch (e) {
       print("Error loading user data: $e");
@@ -72,8 +89,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     _loadUserData();
-    // Call the function to get the current location when the screen loads
-    // _getCurrentLocation();
   }
 
   //
@@ -134,37 +149,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // }
 
 
-  Future<void> _pickAndUploadImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      final File imageFile = File(pickedFile.path);
-
-      try {
-        // Upload the image to Firebase Storage
-        String fileName = 'profile_image_${DateTime.now().millisecondsSinceEpoch}.jpg';
-        Reference storageReference = FirebaseStorage.instance.ref().child('profile_images/$fileName');
-        await storageReference.putFile(imageFile);
-
-        // Get the download URL of the uploaded image
-        String imageUrl = await storageReference.getDownloadURL();
-
-        // Update the profile image URL in Firestore
-        await _firestore.collection('driver').doc(currentUserId).update({'profileImage': imageUrl});
-
-        setState(() {
-          // Update the UI with the new profile image
-          _profileImage = imageFile;
-        });
-
-        print('Profile image updated successfully');
-      } catch (e) {
-        print('Error updating profile image: $e');
-      }
-    }
-  }
-
 
 
   @override
@@ -190,9 +174,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: _profileImage != null
-                      ? FileImage(_profileImage!)
-                      :Image.asset("assets/images/donate-blood-collage-coronavirus-icons-vector-30596014.png").image,
+                  backgroundImage: _image != null && _image.isNotEmpty
+                      ? NetworkImage(_image)
+                      : Image.asset("assets/images/user1.png").image,
                 ),
                 SizedBox(width: 16),
                 Column(
@@ -233,7 +217,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             leading: Icon(Icons.image),
             title: Text('Change Profile Picture'),
             onTap: () {
-              _pickAndUploadImage();
+              _pickImage(ImageSource.gallery);
               Navigator.pop(context); // Close the drawer after selecting image
             },
           ),

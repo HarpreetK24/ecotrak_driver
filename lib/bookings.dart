@@ -14,7 +14,7 @@ class _MyBookingPageWidgetState extends State<MyBookingPageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  String _image = "";
   @override
   void initState() {
     super.initState();
@@ -30,6 +30,7 @@ class _MyBookingPageWidgetState extends State<MyBookingPageWidget> {
       final DocumentSnapshot userData =
       await _firestore.collection('driver').doc(user.uid).get();
       myName = userData['name'];
+      _image = userData['profileImageUrl'];
       print("My Name = " + myName);
 
       QuerySnapshot bookingSnapshot = await _firestore
@@ -83,8 +84,15 @@ class _MyBookingPageWidgetState extends State<MyBookingPageWidget> {
                     padding: EdgeInsets.fromLTRB(33, 3.6, 10, 0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        'https://picsum.photos/seed/180/600',
+                      child: _image != null && _image.isNotEmpty
+                          ? Image.network(
+                        _image,
+                        width: screenWidth * 0.12,
+                        height: screenWidth * 0.12,
+                        fit: BoxFit.cover,
+                      )
+                          : Image.asset(
+                        "assets/images/user1.png",
                         width: screenWidth * 0.12,
                         height: screenWidth * 0.12,
                         fit: BoxFit.cover,

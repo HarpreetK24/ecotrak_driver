@@ -15,7 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _email = "";
   String _phoneNumber = "";
   String _address = "";
-
+  String _image = "";
   TextEditingController _displayNameController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
 
@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _email = userData['email'];
           _phoneNumber = userData['phone'];
           _address = userData['address'];
-
+          _image = userData['profileImageUrl'];
           // Set initial values for the text input fields
           _displayNameController.text = _displayName;
           _addressController.text = _address;
@@ -109,8 +109,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           padding: EdgeInsets.fromLTRB(33, 3.6, 10, 0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: Image.network(
-                              'https://picsum.photos/seed/180/600',
+                            child: _image != null && _image.isNotEmpty
+                                ? Image.network(
+                              _image,
+                              width: screenWidth * 0.12,
+                              height: screenWidth * 0.12,
+                              fit: BoxFit.cover,
+                            )
+                                : Image.asset(
+                              "assets/images/user1.png",
                               width: screenWidth * 0.12,
                               height: screenWidth * 0.12,
                               fit: BoxFit.cover,

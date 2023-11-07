@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,34 +28,34 @@ class _RewardsGenerateState extends State<RewardsGenerate> {
   TextEditingController textController1 = TextEditingController();
   TextEditingController textController2 = TextEditingController();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool showQRCode = false;
   String qrData = "";
+  String _image = "";
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<void> _loadUserData() async {
+    try {
+      print("Load Data Enter ");
+      final User? user = _auth.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userData =
+        await _firestore.collection('driver').doc(user.uid).get();
+        setState(() {
+          _image = userData['profileImageUrl'];
+        });
+      }
+    } catch (e) {
+      print("Error loading user data: $e");
+    }
+  }
 
-  // Future<void> showNotification() async {
-  //   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //   FlutterLocalNotificationsPlugin();
-  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //   AndroidNotificationDetails(
-  //     'channel_id',
-  //     'Channel Name',
-  //     'Channel Description',
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //   );
-  //
-  //   const NotificationDetails platformChannelSpecifics =
-  //   NotificationDetails(android: androidPlatformChannelSpecifics);
-  //   await flutterLocalNotificationsPlugin.show(
-  //     0,
-  //     'QR Code Expired',
-  //     'The QR code has expired.',
-  //     platformChannelSpecifics,
-  //     payload: 'item x',
-  //   );
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
 
   Future<void> expireUpdate() async {
     DocumentReference documentReference = firestore.collection('rewards').doc(qrData);
@@ -162,8 +164,15 @@ class _RewardsGenerateState extends State<RewardsGenerate> {
                     padding: EdgeInsets.fromLTRB(33, 3.6, 10, 0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        'https://picsum.photos/seed/180/600',
+                      child: _image != null && _image.isNotEmpty
+                          ? Image.network(
+                        _image,
+                        width: screenWidth * 0.12,
+                        height: screenWidth * 0.12,
+                        fit: BoxFit.cover,
+                      )
+                          : Image.asset(
+                        "assets/images/user1.png",
                         width: screenWidth * 0.12,
                         height: screenWidth * 0.12,
                         fit: BoxFit.cover,

@@ -25,7 +25,7 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
   LatLng truckLatLang = LatLng(12.93626232871436, 77.60621561694676);
   bool isDriverAvailable = false;
   bool isSessionActive = false;
-
+  String _image = "";
 
 
   Position? _currentPosition; // Store the current location
@@ -66,6 +66,7 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
 
         setState(() {
           _displayName = userData['name'];
+          _image = userData['profileImageUrl'];
         });
       }
     } catch (e) {
@@ -206,8 +207,15 @@ class _GetUserCurrentLocationScreenState extends State<GetUserCurrentLocationScr
                     padding: EdgeInsets.fromLTRB(33, 3.6, 10, 0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        'https://picsum.photos/seed/180/600',
+                      child: _image != null && _image.isNotEmpty
+                          ? Image.network(
+                        _image,
+                        width: screenWidth * 0.12,
+                        height: screenWidth * 0.12,
+                        fit: BoxFit.cover,
+                      )
+                          : Image.asset(
+                        "assets/images/user1.png",
                         width: screenWidth * 0.12,
                         height: screenWidth * 0.12,
                         fit: BoxFit.cover,
